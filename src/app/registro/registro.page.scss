@@ -1,0 +1,51 @@
+.registration-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 20px;
+    background-color: #f4f4f4;
+  }
+  
+  .registration-container {
+    width: 100%;
+    max-width: 500px; /* Añadido para evitar que el formulario sea demasiado ancho en pantallas grandes */
+    padding: 20px;
+    border-radius: 20px; /* Bordes redondeados */
+    background: white; /* Cambiado a blanco para mayor contraste */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
+  }
+  
+  .logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .logo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%; /* Logo redondo */
+    object-fit: cover; /* Para asegurarse de que la imagen se ajuste bien */
+  }
+  
+  .registration-input {
+    margin-bottom: 15px;
+  }
+  
+  .submit-button {
+    margin-top: 20px;
+    border-radius: 10px;
+  }
+  
+  .back-button {
+    display: block;
+    margin: 20px auto 0;
+    text-align: center;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  

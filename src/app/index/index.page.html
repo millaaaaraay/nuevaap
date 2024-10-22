@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Checa Tu Salud</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content id="main-content" class="ion-padding">
+  <p>Bienvenido Usuario {{ email }}</p>  
+  <p class="reminder-text">Recuerda tomar las siguientes medicinas esta semana:</p>
+
+  <!-- Tabla con Angular Material personalizada para la salud -->
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <!-- Fecha Column -->
+    <ng-container matColumnDef="fecha">
+      <th mat-header-cell *matHeaderCellDef> Fecha </th>
+      <td mat-cell *matCellDef="let element"> {{element.fecha}} </td>
+    </ng-container>
+
+    <!-- Medicación Column -->
+    <ng-container matColumnDef="medicacion">
+      <th mat-header-cell *matHeaderCellDef> Medicación </th>
+      <td mat-cell *matCellDef="let element"> {{element.medicacion}} </td>
+    </ng-container>
+
+    <!-- Dosis Column -->
+    <ng-container matColumnDef="dosis">
+      <th mat-header-cell *matHeaderCellDef> Dosis </th>
+      <td mat-cell *matCellDef="let element"> {{element.dosis}} </td>
+    </ng-container>
+
+    <!-- Filas y columnas de la tabla -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</ion-content>
