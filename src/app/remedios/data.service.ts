@@ -1,11 +1,11 @@
+// data.service.ts
 import { Injectable } from '@angular/core';
 import { Clremedios } from './models/CLremedios';
-
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
-// creamos Constantes que utilizaremos en el envio
+// URL del JSON Server
 const apiUrl = "http://localhost:3000/remedios";
 const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
 
@@ -13,67 +13,80 @@ const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/js
   providedIn: 'root'
 })
 export class DataService {
-  // Injectamos HttpClient, para poder consular una página
   constructor(private http: HttpClient) { }
 
-  // Controla y enviará un mensaje a consola para todos los errores
+  /**
+   * Maneja los errores de las operaciones HTTP.
+   * @param operation Nombre de la operación que se está realizando
+   * @param result Resultado por defecto en caso de error
+   */
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-      console.error("handleError Harrys", error); // log to console instead
-      return of(result as T);
+      console.error(`Error en ${operation}:`, error); // Muestra el error en consola
+      return of(result as T); // Retorna el resultado por defecto
     };
   }
 
+  /**
+   * Añade un nuevo remedio al servidor.
+   * @param remedios Objeto de tipo Clremedios
+   */
   addRemedio(remedios: Clremedios): Observable<Clremedios> {
-    console.log("añadiendo remedio : ", remedios);
-    // Ojo No lo ejecuta lo declara
-    // El Pipe lo intercepta
-    return this.http.post<Clremedios>(apiUrl, remedios, httpOptions)
-      .pipe(  // Tubería
-        // tap intersecta la respuesta si no hay error
-        tap((producto: Clremedios) => console.log('added remedio w/:', remedios)),
-        // En caso de que ocurra Error
+    console.log("Añadiendo remedio:", remedios); // Verifica el contenido aquí
+    return this.http.post<Clremedios>(apiUrl, '/remedios', httpOptions)
+      .pipe(
+        tap((producto: Clremedios) => console.log('Remedio añadido:', producto)),
         catchError(this.handleError<Clremedios>('addRemedio'))
       );
   }
 
-  // Obtenemos todos los Productos
+  /**
+   * Obtiene todos los remedios del servidor.
+   */
   getRemedios(): Observable<Clremedios[]> {
-    console.log("getProducts ()");
-    return this.http.get<Clremedios[]>(apiUrl+"/remedios")
+    console.log("Obteniendo todos los remedios...");
+    return this.http.get<Clremedios[]>(apiUrl)
       .pipe(
-        tap(heroes => console.log('fetched products')),
-        catchError(this.handleError('getProducts', []))
+        tap(remedios => console.log('Remedios obtenidos:', remedios)),
+        catchError(this.handleError('getRemedios', []))
       );
   }
-  //obtenemos remedio por id
+
+  /**
+   * Obtiene un remedio específico por ID.
+   * @param id ID del remedio
+   */
   getRemedio(id: number): Observable<Clremedios> {
-    //const url = '${apiUrl}/${id}';
-    //return this.http.get<Producto>(url).pipe(
-    console.log("getProduct ID:" + id);
-    return this.http.get<Clremedios>(apiUrl + "/" + id)
+    console.log("Obteniendo remedio con ID:", id);
+    return this.http.get<Clremedios>(`${apiUrl}/${id}`)
       .pipe(
-        tap(_ => console.log('fetched product id=${id}')),
-        catchError(this.handleError<Clremedios>('getProduct id=${id}'))
+        tap(_ => console.log(`Remedio obtenido con ID=${id}`)),
+        catchError(this.handleError<Clremedios>(`getRemedio id=${id}`))
       );
   }
-  
+
+  /**
+   * Elimina un remedio del servidor por ID.
+   * @param id ID del remedio a eliminar
+   */
   deleteRemedios(id: number): Observable<Clremedios> {
-    //const url = '${apiUrl}/${id}';
-    //return this.http.delete<Producto>(url, httpOptions).pipe(
-    return this.http.delete<Clremedios>(apiUrl + "/" + id, httpOptions)
+    return this.http.delete<Clremedios>(`${apiUrl}/${id}`, httpOptions)
       .pipe(
-        tap(_ => console.log('deleted product id=${id}')),
-        catchError(this.handleError<Clremedios>('deleteProduct'))
+        tap(_ => console.log(`Remedio eliminado con ID=${id}`)),
+        catchError(this.handleError<Clremedios>('deleteRemedio'))
       );
   }
 
+  /**
+   * Actualiza un remedio existente.
+   * @param id ID del remedio a actualizar
+   * @param remedios Objeto de tipo Clremedios con los nuevos valores
+   */
   updateRemedios(id: number, remedios: Clremedios): Observable<Clremedios> {
-    return this.http.put<Clremedios>(apiUrl + "/" + id, remedios, httpOptions)
+    return this.http.put<Clremedios>(`${apiUrl}/${id}`, remedios, httpOptions)
       .pipe(
-        tap(_ => console.log('updated product id=${id}')),
-        catchError(this.handleError<any>('updateProduct'))
+        tap(_ => console.log(`Remedio actualizado con ID=${id}`)),
+        catchError(this.handleError<any>('updateRemedio'))
       );
   }
-
 }

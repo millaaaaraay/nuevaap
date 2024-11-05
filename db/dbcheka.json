@@ -13,30 +13,33 @@
       "dosis": "2mg"
     },
     {
-      "id": 11,
-      "nombre": "clonazeparfrvdbggf",
-      "descripcion": "relajantek",
-      "dosis": 333
+      "id": "11",
+      "nombre": "paracetamol",
+      "descripcion": "dolor",
+      "dosis": 20
+    },
+    {
+      "id": "ff7e"
     },
     {
       "id": 11,
-      "nombre": "paracetamool",
-      "descripcion": "dolor de cabeza",
-      "dosis": 5
+      "nombre": "loraaaaaaaaaaa",
+      "descripcion": "relajante",
+      "dosis": 12
+    },
+    {
+      "id": 11,
+      "nombre": "loraaaaaaaaaaa",
+      "descripcion": "relajante",
+      "dosis": 12
     }
   ],
-  "Rutinas": [
+  "rutinas": [
     {
       "id": "21",
       "tipo": "flexibilidad",
       "ejercicio1": "elongacion de cuello",
       "ejercicio2": "movimiento del gato"
-    },
-    {
-      "id": "22",
-      "tipo": "Movimiento articular",
-      "ejercicio1": "movimiento  de cabeza",
-      "ejercicio2": "movimiento de manos"
     }
   ],
   "usuarios": [

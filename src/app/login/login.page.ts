@@ -1,7 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
-import { IonModal } from '@ionic/angular';
-import { OverlayEventDetail } from '@ionic/core/components';
+import { Component, OnInit } from '@angular/core';
+import { NavController } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -9,73 +10,55 @@ import { OverlayEventDetail } from '@ionic/core/components';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
+  formLogin: FormGroup; // Formulario para el inicio de sesión
 
-  @ViewChild(IonModal, { static: false }) modal!: IonModal;
+  constructor(
+    private router: Router, // Router para la navegación entre páginas
+    private fbl: FormBuilder, // FormBuilder para crear formularios
+    private authService: AuthService, // Servicio de autenticación para manejar el inicio de sesión
+    private navCtrl: NavController // Controlador de navegación de Ionic
+  ) {
+    // Inicializar el formulario de inicio de sesión con validaciones
+    this.formLogin = this.fbl.group({
+      username: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$')]]
+    });
+  }
 
-  email: string = '';
-  password: string = '';
-  emailError: string = '';
-  passwordError: string = '';
-  message: string = '';
+  ngOnInit(): void {
+    this.checkLoginStatus(); // Verificar si el usuario ya está autenticado al inicializar el componente
+  }
 
-  constructor(private router: Router) {}
+  // Verificar si el usuario ya está autenticado
+  async checkLoginStatus() {
+    const isLoggedIn = this.authService.isAuthenticated(); // Verificar si hay una sesión activa
+    if (isLoggedIn) {
+      this.router.navigate(['/index']); // Redirigir al usuario a la página de inicio si ya está autenticado
+    }
+  }
 
-  ngOnInit(): void {}
-
-  // Maneja el inicio de sesión
-  login() {
-    this.emailError = '';
-    this.passwordError = '';
-
-    // Validar el correo electrónico
-    if (!this.isValidEmail(this.email)) {
-      this.emailError = 'Correo inválido';
-    } 
-    
-    // Validar la contraseña con el patrón
-    const passwordPattern = /^(?=.*[A-Z])(?=.*\d{4,})(?=.*[a-zA-Z]{3,}).{8,}$/;
-    if (!passwordPattern.test(this.password)) {
-      this.passwordError = 'La contraseña debe contener al menos 4 números, 3 caracteres y 1 mayúscula.';
-    } else if (this.email === 'benja@gmail.com' && this.password === 'Benj1234') {
-      const navigationExtras: NavigationExtras = {
-        state: {
-          email: this.email
-        }
-      };
-      this.router.navigate(['index'], navigationExtras);
+  // Función para manejar el inicio de sesión
+  async onLogin() {
+    const userForm: string = this.formLogin.value.username; // Obtener el nombre de usuario del formulario
+    const passForm: string = this.formLogin.value.password; // Obtener la contraseña del formulario
+    if (this.formLogin.valid) { // Verificar si el formulario es válido
+      console.log('Formulario válido, guardando...', this.formLogin.value); // Log de formulario válido
+      try {
+        await this.authService.login({ username: userForm, password: passForm }); // Intentar iniciar sesión con los datos ingresados
+        console.log('Usuario autenticado:', this.authService.isAuthenticated()); // Log de usuario autenticado
+        this.router.navigate(['/index']); // Navegar a la página de inicio
+      } catch (error) {
+        console.error('Error en el inicio de sesión:', error);
+        this.authService.presentToast("Credenciales incorrectas"); // Mostrar mensaje de error
+      }
     } else {
-      this.router.navigate(['index']);
+      console.log('Formulario no válido, revisa los campos.'); // Log de formulario no válido
+      this.formLogin.markAllAsTouched(); // Marcar todos los campos del formulario como tocados para mostrar errores
     }
   }
 
-  // Función para validar el correo electrónico
-  isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-
-  // Función para manejar el cierre del modal
-  cancel() {
-    this.modal.dismiss(null, 'cancel');
-  }
-
-  // Función para confirmar la recuperación de contraseña
-  confirm() {
-    if (this.isValidEmail(this.email)) {
-      this.modal.dismiss(this.email, 'confirm');
-    }
-  }
-
-  // Maneja el evento de cierre del modal
-  onWillDismiss(event: Event) {
-    const ev = event as CustomEvent<OverlayEventDetail<string>>;
-    if (ev.detail.role === 'confirm') {
-      this.message = `A reset link has been sent to ${ev.detail.data}!`;
-    }
-  }
-
-  // Navega a la página de registro
-  goToRegistro() {
-    this.router.navigate(['/registro']);
+  // Redirigir a la página de registro
+  navigateToRegisterPage() {
+    this.router.navigate(['/registro']); // Redirige a la página de registro
   }
 }

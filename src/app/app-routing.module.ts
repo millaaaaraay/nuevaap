@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -21,19 +22,17 @@ const routes: Routes = [
   },
   {
     path: 'index',
-    loadChildren: () => import('./index/index.module').then(m => m.IndexPageModule)
+    loadChildren: () => import('./index/index.module').then(m => m.IndexPageModule),
   },
   {
     path: 'remedios',
     loadChildren: () => import('./remedios/remedios/remedios.module').then(m => m.RemediosPageModule),
-    
   },
   {
     path: 'remedios-add',
     loadChildren: () => import('./remedios/remedios-add/remedios-add.module').then(m => m.RemediosAddPageModule),
     
   },
-
   {
     path: 'remedios-all',
     loadChildren: () => import('./remedios/remedios-all/remedios-all.module').then(m => m.RemediosAllPageModule),
@@ -45,11 +44,11 @@ const routes: Routes = [
   {
     path: 'remedios-edit',
     loadChildren: () => import('./remedios/remedios-edit/remedios-edit.module').then(m => m.RemediosEditPageModule),
-
   },
   {
     path: 'remedios-list',
     loadChildren: () => import('./remedios/remedios-list/remedios-list.module').then(m => m.RemediosListPageModule),
+    canActivate: [AuthGuard]
   },
 ];
 
