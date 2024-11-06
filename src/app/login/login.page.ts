@@ -20,8 +20,8 @@ export class LoginPage implements OnInit {
   ) {
     // Inicializar el formulario de inicio de sesión con validaciones
     this.formLogin = this.fbl.group({
-      username: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$')]]
+      username: ['', [Validators.required, Validators.email]], // Validar que sea un correo
+      password: ['', [Validators.required, Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$')]] // Validar contraseña
     });
   }
 
@@ -29,36 +29,36 @@ export class LoginPage implements OnInit {
     this.checkLoginStatus(); // Verificar si el usuario ya está autenticado al inicializar el componente
   }
 
-  // Verificar si el usuario ya está autenticado
   async checkLoginStatus() {
     const isLoggedIn = this.authService.isAuthenticated(); // Verificar si hay una sesión activa
     if (isLoggedIn) {
-      this.router.navigate(['/index']); // Redirigir al usuario a la página de inicio si ya está autenticado
+      this.router.navigate(['/home']); // Redirigir al usuario a la página de inicio si ya está autenticado
     }
   }
 
-  // Función para manejar el inicio de sesión
   async onLogin() {
-    const userForm: string = this.formLogin.value.username; // Obtener el nombre de usuario del formulario
-    const passForm: string = this.formLogin.value.password; // Obtener la contraseña del formulario
-    if (this.formLogin.valid) { // Verificar si el formulario es válido
-      console.log('Formulario válido, guardando...', this.formLogin.value); // Log de formulario válido
+    const userForm: string = this.formLogin.value.username; 
+    const passForm: string = this.formLogin.value.password; 
+  
+    console.log('Datos del formulario:', this.formLogin.value); // Para verificar valores
+
+    if (this.formLogin.valid) { 
+      console.log('Formulario válido, guardando...'); 
       try {
-        await this.authService.login({ username: userForm, password: passForm }); // Intentar iniciar sesión con los datos ingresados
-        console.log('Usuario autenticado:', this.authService.isAuthenticated()); // Log de usuario autenticado
-        this.router.navigate(['/index']); // Navegar a la página de inicio
+        await this.authService.login({ username: userForm, password: passForm }); 
+        console.log('Usuario autenticado:', this.authService.isAuthenticated()); 
+        this.router.navigate(['/home']); 
       } catch (error) {
         console.error('Error en el inicio de sesión:', error);
-        this.authService.presentToast("Credenciales incorrectas"); // Mostrar mensaje de error
+        this.authService.presentToast("Credenciales incorrectas"); 
       }
     } else {
-      console.log('Formulario no válido, revisa los campos.'); // Log de formulario no válido
-      this.formLogin.markAllAsTouched(); // Marcar todos los campos del formulario como tocados para mostrar errores
+      console.log('Formulario no válido, revisa los campos.'); 
+      this.formLogin.markAllAsTouched(); 
     }
   }
 
-  // Redirigir a la página de registro
   navigateToRegisterPage() {
-    this.router.navigate(['/registro']); // Redirige a la página de registro
+    this.router.navigate(['/registro']); 
   }
 }

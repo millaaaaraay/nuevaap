@@ -22,7 +22,6 @@ export class AuthService {
 
   isLogged() {
     this.storage.get("USER_DATA").then((response) => {
-      console.log(response);
       if (response != null) {
         this.authState.next(true);
       }
@@ -48,6 +47,7 @@ export class AuthService {
     return this.dbtaskService.getSesionData(login).then((data) => {
       if (data === undefined) {
         this.presentToast("Credenciales Incorrectas");
+        this.authState.next(false); // Asegúrate de que el estado de autenticación se actualice
         return Promise.reject("Credenciales Incorrectas");
       } else {
         data.active = 1;
@@ -55,7 +55,7 @@ export class AuthService {
           .then((response) => {
             this.storage.set("USER_DATA", data);
             this.authState.next(true);
-            this.router.navigate(['home']);
+            this.router.navigate(['home']); // Navega a la página deseada después de iniciar sesión
           });
       }
     })
