@@ -44,11 +44,10 @@
   ],
   "usuarios": [
     {
-      "id": "benja@gmail.com",
-      "first_name": "benjamin",
-      "last_name": "contreras",
+      "id": "101",
+      "nombre": "benja",
       "email": "benja@gmail.com",
-      "clave": "112233"
+      "contrasena": "112233"
     }
   ]
 }

@@ -1,10 +1,10 @@
 // data.service.ts
-import { Injectable } from '@angular/core';
-import { Clremedios } from './models/CLremedios';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-
+import { ClUsuario } from '../auth/ClUsuario';
+import { Clremedios } from './models/CLremedios';
 // URL del JSON Server
 const apiUrl = "http://localhost:3000/remedios";
 const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
@@ -89,4 +89,23 @@ export class DataService {
         catchError(this.handleError<any>('updateRemedio'))
       );
   }
+  getUsuarios(): Observable<ClUsuario[]> {
+    console.log("Obteniendo usuarios...");
+    return this.http.get<ClUsuario[]>(apiUrl + "/usuarios")
+      .pipe(
+        tap(usuarios => console.log('Usuarios obtenidos')), // Loguea que se obtuvieron los usuarios
+        catchError(this.handleError('getUsuarios', [])) // Maneja errores
+      );
+  }
+
+  // Obtener un usuario por correo
+  getUsuario(correo: string): Observable<ClUsuario[]> {
+    console.log('Obteniendo usuario: ', correo);
+    return this.http.get<ClUsuario[]>(apiUrl + "/usuarios?correo=" + correo)
+      .pipe(
+        tap(_ => console.log(`Usuario obtenido correo=${correo}`)), // Loguea que se obtuvo el usuario
+        catchError(this.handleError<ClUsuario[]>('getUsuario')) // Maneja errores
+      );
+  }
+
 }

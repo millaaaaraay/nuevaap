@@ -1,9 +1,9 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
-import { Clremedios } from './models/CLremedios';
-import { Observable, interval, lastValueFrom } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
+import { interval, lastValueFrom } from 'rxjs';
 import { DataService } from './data.service';
+import { Clremedios } from './models/CLremedios';
 
 @Injectable({
   providedIn: 'root'
@@ -96,8 +96,8 @@ export class BddService {
 
   // Métodos para la tabla usuarios
   async addUsuario(usuario: any) {
-    const sql = 'INSERT INTO usuarios (id, first_name, last_name, email, clave) VALUES (?, ?, ?, ?, ?)';
-    return this.dbInstance.executeSql(sql, [usuario.id, usuario.first_name, usuario.last_name, usuario.email, usuario.clave]);
+    const sql = 'INSERT INTO usuarios (id,nombre ,email, clave) VALUES (?, ?, ?, ?, ?)';
+    return this.dbInstance.executeSql(sql, [usuario.id, usuario.nombre , usuario.email, usuario.contrasena]);
   }
 
   async getUsuarios() {

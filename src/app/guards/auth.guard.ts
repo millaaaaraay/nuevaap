@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { AuthService } from '../services/auth.service'; 
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Storage } from '@ionic/storage-angular';
+import { AuthenticationService } from '../auth/authentication.service'; // Asegúrate de importar el servicio
 
 @Injectable({
   providedIn: 'root'
@@ -8,23 +9,21 @@ import { AuthService } from '../services/auth.service';
 export class AuthGuard implements CanActivate {
 
   constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+    private authService: AuthenticationService,
+     private router: Router,
+     private storage: Storage) {}
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): boolean {
-    // Verifica si el usuario está autenticado
-    const isAuthenticated = this.authService.isAuthenticated();
+  async canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Promise<boolean | UrlTree> {
+    const isAuthenticated = true;
 
-    if (!isAuthenticated) {
-      // Si no está autenticado, redirige a la página de login
-      this.router.navigate(['login']);
+    if (await this.storage.get('isLoggedIn')) {
+      return true;
+    } else {
+      this.router.navigate(['/login']);
       return false;
     }
-
-    // Si está autenticado, permite el acceso a la ruta
-    return true;
   }
 }
